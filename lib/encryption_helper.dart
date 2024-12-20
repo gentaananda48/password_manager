@@ -2,6 +2,7 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import 'dart:convert';
 
 class EncryptionHelper {
+  // Fungsi untuk mengenkripsi password
   static String encryptPassword(String password, String key) {
     try {
       // Panjang kunci 16 karakter
@@ -29,6 +30,7 @@ class EncryptionHelper {
     }
   }
 
+  // Fungsi untuk mendekripsi password
   static String decryptPassword(String encryptedData, String key) {
     try {
       // Pisahkan IV dan data terenkripsi
@@ -55,5 +57,11 @@ class EncryptionHelper {
       print('Error during decryption: $e');
       return '';
     }
+  }
+
+  // Fungsi untuk memverifikasi password
+  static bool verifyPassword(
+      String password, String encryptedData, String key) {
+    return password == decryptPassword(encryptedData, key);
   }
 }

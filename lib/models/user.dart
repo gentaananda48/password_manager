@@ -4,12 +4,11 @@ class User {
   final String fullName;
   final String password;
 
-  User({
-    this.id,
-    required this.username,
-    required this.fullName,
-    required this.password,
-  });
+  User(
+      {this.id,
+      required this.username,
+      required this.fullName,
+      required this.password});
 
   Map<String, dynamic> toMap() {
     return {
@@ -20,7 +19,7 @@ class User {
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
+  static User fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],
       username: map['username'],

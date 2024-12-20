@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../database_helper.dart';
-import '../encryption_helper.dart';
-import 'login_screen.dart';
 import '../models/user.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -13,35 +11,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
   void _register() async {
     String username = _usernameController.text;
     String fullName = _fullNameController.text;
     String password = _passwordController.text;
 
-    if (username.isEmpty || fullName.isEmpty || password.isEmpty) {
-      print("Please fill in all fields.");
-      return;
-    }
+    // Create a new user object
+    User user =
+        User(username: username, fullName: fullName, password: password);
 
-    String encryptedPassword =
-        EncryptionHelper.encryptPassword(password, username);
+    // Insert user into the database
+    await DatabaseHelper.instance.insertUser(user);
 
-    User user = User(
-      username: username,
-      fullName: fullName,
-      password: encryptedPassword,
-    );
-
-    await _dbHelper.insertUserProfile(user);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Registration successful')));
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    // Navigate back to the login screen
+    Navigator.pop(context);
   }
 
   @override
@@ -54,18 +38,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _fullNameController,
-              decoration: InputDecoration(labelText: 'Full Name'),
-            ),
-            TextField(
               controller: _usernameController,
               decoration: InputDecoration(labelText: 'Username'),
             ),
             TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              controller: _fullNameController,
+              decoration: InputDecoration(labelText: 'Full Name'),
             ),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: _register,
               child: Text('Register'),
